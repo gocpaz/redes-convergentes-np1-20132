@@ -15,6 +15,9 @@ public class Main {
 	private static final String MIB_IP_GATEWAY = "1.3.6.1.2.1.16.19.12.0";
 	private static final String MIB_IP_GENERICO = "1.3.6.1.2.1.4.20.1.1";
 	private static final String MIB_SYS_LOCATION = "1.3.6.1.2.1.1.6";
+	private static final String MIB_IP_DEVICE = "1.3.6.1.2.1.4.20.1.1";
+	private static final String MIB_IP_ROUTE = "1.3.6.1.2.1.4.21";
+	
 	private static final String MIB_TEST = "1.3.6.1.2.1.1.6";
 	
 	
