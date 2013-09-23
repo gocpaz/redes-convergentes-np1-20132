@@ -1,6 +1,8 @@
 package core.util;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.snmp4j.CommunityTarget;
 import org.snmp4j.PDU;
@@ -15,6 +17,9 @@ import org.snmp4j.smi.OID;
 import org.snmp4j.smi.OctetString;
 import org.snmp4j.smi.VariableBinding;
 import org.snmp4j.transport.DefaultUdpTransportMapping;
+import org.snmp4j.util.DefaultPDUFactory;
+import org.snmp4j.util.TableEvent;
+import org.snmp4j.util.TableUtils;
 
 import core.pojo.Manager;
 
@@ -107,4 +112,49 @@ public class ManagerUtil {
 		}
 	}
 
+	public List<List<String>> getTableAsStrings(OID... oids) {
+		TableUtils tUtils = new TableUtils(manager.getSnmp(), new DefaultPDUFactory());
+
+		List<TableEvent> events = tUtils
+				.getTable(getCommunityTarget(), oids, null, null);
+
+		List<List<String>> list = new ArrayList<List<String>>();
+		for (TableEvent event : events) {
+			if (event.isError()) {
+				throw new RuntimeException(event.getErrorMessage());
+			}
+			List<String> strList = new ArrayList<String>();
+			list.add(strList);
+			for (VariableBinding vb : event.getColumns()) {
+				strList.add(vb.getVariable().toString());
+			}
+		}
+		return list;
+	}
+
+	public List<String> getTableAsStrings2(OID... oids) {
+		TableUtils tUtils = new TableUtils(manager.getSnmp(), new DefaultPDUFactory());
+
+		List<TableEvent> events = tUtils
+				.getTable(getCommunityTarget(), oids, null, null);
+
+		List<String> list = new ArrayList<String>();
+		for (TableEvent event : events) {
+			if (event.isError()) {
+				throw new RuntimeException(event.getErrorMessage());
+			}
+			String strList = "";
+			for (VariableBinding vb : event.getColumns()) {
+				strList+=(vb.getVariable().toString());
+				list.add(strList);
+				strList = "";
+			}
+		}
+		return list;
+	}
+	
+	public String extractSingleString(ResponseEvent event) {
+		return event.getResponse().get(0).getVariable().toString();
+	}
+	
 }
