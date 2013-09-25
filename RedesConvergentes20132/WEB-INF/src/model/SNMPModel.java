@@ -1,11 +1,16 @@
 package model;
 
+import java.util.List;
+
+import core.pojo.Route;
+
 /**
  * @author argeu
  */
 public class SNMPModel {
 	private String ipAddress;
 	private String sysUpTime;
+	private List<Route> rotas;
 	/**
 	 * @return the ipAddress
 	 */
@@ -29,5 +34,17 @@ public class SNMPModel {
 	 */
 	public void setSysUpTime(String sysUpTime) {
 		this.sysUpTime = sysUpTime;
+	}
+	/**
+	 * @return the rotas
+	 */
+	public List<Route> getRotas() {
+		return rotas;
+	}
+	/**
+	 * @param rotas the rotas to set
+	 */
+	public void setRotas(List<Route> rotas) {
+		this.rotas = rotas;
 	}
 }
