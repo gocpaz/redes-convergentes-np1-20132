@@ -16,7 +16,7 @@ function updateData(){
 			SMNPdwr.getMessage(function(data){
 				console.log(data);
 				});
-			},200);
+			},2000);
 }
 </script>
 </head>
