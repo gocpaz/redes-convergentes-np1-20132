@@ -22,6 +22,7 @@ import org.snmp4j.util.TableEvent;
 import org.snmp4j.util.TableUtils;
 
 import core.pojo.Manager;
+import core.pojo.Route;
 
 public class ManagerUtil {
 	Manager manager;
@@ -157,4 +158,40 @@ public class ManagerUtil {
 		return event.getResponse().get(0).getVariable().toString();
 	}
 	
+	public List<Route> getRotas(){
+		List<Route> listRota = new ArrayList<Route>();
+//			1.3.6.1.2.1.4.21.1.1 - dest
+		List<String> dest = getTableAsStrings2(new OID("1.3.6.1.2.1.4.21.1.1"));
+//			1.3.6.1.2.1.4.21.1.11 - mask
+		List<String> mask = getTableAsStrings2(new OID("1.3.6.1.2.1.4.21.1.11"));
+//			1.3.6.1.2.1.4.21.1.7 - nexthop
+		List<String> nexthop = getTableAsStrings2(new OID("1.3.6.1.2.1.4.21.1.7"));
+//			1.3.6.1.2.1.4.21.1.8 - type
+		List<String> type = getTableAsStrings2(new OID("1.3.6.1.2.1.4.21.1.8"));
+//		1.3.6.1.2.1.4.21.1.8 - proto
+		List<String> proto = getTableAsStrings2(new OID("1.3.6.1.2.1.4.21.1.9"));
+		for (int i = 0; i < dest.size(); i++) {
+			Route rota = new Route();
+			rota.setIpRouteEntry(dest.get(i));
+			rota.setIpRouteMask(mask.get(i));
+			rota.setIpRouteNextHop(nexthop.get(i));
+			String typeDesc = "";
+			switch(Integer.parseInt(type.get(i))){
+				case Route.TYPE_DIRECT: typeDesc = "DIRETO";break;
+				case Route.TYPE_INDIRECT: typeDesc = "INDIRETO";break;
+			}
+			rota.setIpRouteType(typeDesc);
+			
+			String protoDesc = "";
+			switch(Integer.parseInt(proto.get(i))){
+				case Route.protocol_rip:protoDesc = "RIP";break;
+				case Route.protocol_local:protoDesc = "LOCAL";break;
+				case Route.protocol_icmp:protoDesc = "ICMP";break;
+			}
+			rota.setIpRouteProtocol(protoDesc);
+			System.out.println(rota.toString());
+			listRota.add(rota);
+		}
+		return listRota;
+	}
 }
