@@ -4,6 +4,25 @@ var current;
 
 function updateCurrentInterval(ip){
 	current = setInterval(function() {
+		$.post("pageloader.pl?ipAddress="+ip,{
+			callback : function(table) {
+				var ipId = $(table).find("#ipId").html();
+				$("#tab"+ipId).html($(table).find("#router").html());
+			},
+			errorHandler : function(message) {
+				clearInterval(current);
+				$("#tab"+ipId).remove();
+				$("#li"+ipId).remove();
+				$("#tabs").tabs("refresh");
+				$("#tabs").tabs("option", "active", -1);
+				alert(message);
+			}
+		});
+	}, 2000);
+}
+
+function updateCurrentIntervalDWR(ip){
+	current = setInterval(function() {
 		SMNPdwr.getMessage(ip,{
 			callback : function(snmp) {
 				//RouterData
