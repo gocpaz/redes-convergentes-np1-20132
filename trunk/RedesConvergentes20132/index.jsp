@@ -25,6 +25,7 @@
 					table = table.replace(":upTime",snmp.sysUpTime);
 					//Set the template table for the router
 					var ipId = snmp.ipAddress.split(".").join("");
+					$("#tab"+ipId).html("");
 					$("#tab"+ipId).html(table);
 				},
 				errorHandler : function(message) {
@@ -61,7 +62,7 @@
 	
 	function changeData(link){
 		clearInterval(current);
-		var ip = $(link).attr("href").substr(4);
+		var ip = $.trim($(link).html());
 		updateCurrentInterval(ip);
 	}
 </script>
