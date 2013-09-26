@@ -38,6 +38,7 @@ public class ManagerUtil {
 	public ManagerUtil(String ipAddress, String community) {
 		this.manager = new Manager();
 		manager.setIpAddress(ipAddress);
+		manager.setCommunity(community);
 	}
 
 	/**
@@ -98,7 +99,7 @@ public class ManagerUtil {
 		communityTarget.setCommunity(new OctetString(manager.getCommunity()));
 		communityTarget.setAddress(ipDestino);
 		communityTarget.setRetries(2);
-		communityTarget.setTimeout(2000);
+		communityTarget.setTimeout(1500);
 		communityTarget.setVersion(SnmpConstants.version2c);
 		return communityTarget;
 	}

@@ -4,45 +4,22 @@ var current;
 var community;
 function updateCurrentInterval(ip){
 	current = setInterval(function() {
-		$.post("pageloader.pl", {ipAddress:ip, community:community}, 
-			function(table) {
+		$.ajax({
+			method: "post",
+			url: "pageloader.pl",
+			data: "ipAddress="+ip+"&community="+community,
+			success: function(table) {
 				var ipId = $(table)[2].innerHTML;
 				$("#tab"+ipId).html($(table)[0].innerHTML);
-			}).error(function(error){
-				clearInterval(current);
-				console.log(error);
-				var msg = "";
-				if(error.status == 500){
-					msg = "Request Timeout, verifique se o IP está correto e se o SNMP está habilitado.";
-				}
-				alert(msg);
-			});
-	}, 5000);
-}
-
-function updateCurrentIntervalDWR(ip){
-	current = setInterval(function() {
-		SMNPdwr.getMessage(ip,{
-			callback : function(snmp) {
-				//RouterData
-				var table = $("#router").html();
-				table = table.replace(":ipAddress",snmp.ipAddress);
-				table = table.replace(":upTime",snmp.sysUpTime);
-				//Set the template table for the router
-				var ipId = snmp.ipAddress.split(".").join("");
-				$("#tab"+ipId).html("");
-				$("#tab"+ipId).html(table);
 			},
-			errorHandler : function(message) {
+			error: function(response, status, error){
 				clearInterval(current);
-				$("#tab"+ipId).remove();
-				$("#li"+ipId).remove();
-				$("#tabs").tabs("refresh");
-				$("#tabs").tabs("option", "active", -1);
-				alert(message);
+				//var msg = "Request Timeout, verifique se o IP está correto e se o SNMP está habilitado.";
+				var msg = $.trim(response.responseText);
+				alert(msg);
 			}
 		});
-	}, 2000);
+	}, 5000);
 }
 
 function erroServer(){
@@ -70,6 +47,7 @@ function isIpValid(ip){
 function createNewTab() {
 	var ip = $.trim($("#ipAddress").val());
 	community = $.trim($("#community").val());
+	$("#community").attr("readonly","readonly");
 	if(isIpValid(ip)){
 		if($("#tabs:hidden").length > 0){
 			$("#tabs").show();
