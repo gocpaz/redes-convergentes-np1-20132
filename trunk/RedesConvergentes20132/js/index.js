@@ -1,15 +1,23 @@
 dwr.engine.setActiveReverseAjax(true);
 dwr.engine.setErrorHandler(erroServer);
 var current;
-
+var community;
 function updateCurrentInterval(ip){
 	current = setInterval(function() {
-		$.post("pageloader.pl", {ipAddress:ip}, 
+		$.post("pageloader.pl", {ipAddress:ip, community:community}, 
 			function(table) {
 				var ipId = $(table)[2].innerHTML;
 				$("#tab"+ipId).html($(table)[0].innerHTML);
+			}).error(function(error){
+				clearInterval(current);
+				console.log(error);
+				var msg = "";
+				if(error.status == 500){
+					msg = "Request Timeout, verifique se o IP está correto e se o SNMP está habilitado.";
+				}
+				alert(msg);
 			});
-	}, 2000);
+	}, 5000);
 }
 
 function updateCurrentIntervalDWR(ip){
@@ -61,6 +69,7 @@ function isIpValid(ip){
 
 function createNewTab() {
 	var ip = $.trim($("#ipAddress").val());
+	community = $.trim($("#community").val());
 	if(isIpValid(ip)){
 		if($("#tabs:hidden").length > 0){
 			$("#tabs").show();

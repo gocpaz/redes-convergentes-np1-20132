@@ -6,6 +6,6 @@
 			<param name="class" value="controller.SNMPController" />
 		</create>
 		
-		<convert converter="bean" match="model.SNMPModel"/>
+		<convert converter="bean" match="gui.model.SNMPModel"/>
 	</allow>
 </dwr>

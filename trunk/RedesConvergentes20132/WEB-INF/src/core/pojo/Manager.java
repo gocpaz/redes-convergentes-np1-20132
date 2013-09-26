@@ -5,6 +5,7 @@ import org.snmp4j.Snmp;
 public class Manager {
 	private Snmp snmp = null;
 	private String ipAddress = null;
+	private String community = null;
 	
 	/**
 	 * @return the snmp
@@ -29,6 +30,18 @@ public class Manager {
 	 */
 	public void setIpAddress(String ipAddress) {
 		this.ipAddress = ipAddress;
+	}
+	/**
+	 * @return the community
+	 */
+	public String getCommunity() {
+		return community;
+	}
+	/**
+	 * @param community the community to set
+	 */
+	public void setCommunity(String community) {
+		this.community = community;
 	}
 	
 }

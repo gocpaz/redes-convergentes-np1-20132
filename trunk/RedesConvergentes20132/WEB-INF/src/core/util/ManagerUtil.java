@@ -6,7 +6,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-
 import org.snmp4j.CommunityTarget;
 import org.snmp4j.PDU;
 import org.snmp4j.Snmp;
@@ -29,13 +28,14 @@ import core.pojo.Manager;
 import core.pojo.Route;
 
 public class ManagerUtil {
-	public static Manager manager;
+	private Manager manager;
 
 	/**
 	 * Construtor padrão
 	 * @param ipAddress - endereço de ip do agente
+	 * @param community - nome da community
 	 */
-	public ManagerUtil(String ipAddress) {
+	public ManagerUtil(String ipAddress, String community) {
 		this.manager = new Manager();
 		manager.setIpAddress(ipAddress);
 	}
@@ -58,12 +58,12 @@ public class ManagerUtil {
 	 * @return
 	 * @throws IOException
 	 */
-	public String getInformation(OID oid) throws IOException {
+	public String getInformation(OID oid) throws IOException, RuntimeException {
 		try {
 			ResponseEvent event = get(new OID[] { oid });
 			return event.getResponse().get(0).getVariable().toString();
-		} catch (NullPointerException e) {
-			return "Sem resposta do servidor.";
+		} catch (Exception e) {
+			throw new RuntimeException("Sem resposta do servidor.");
 		}
 	}
 
@@ -74,7 +74,7 @@ public class ManagerUtil {
 	 * @return
 	 * @throws IOException
 	 */
-	public ResponseEvent get(OID oids[]) throws IOException {
+	public ResponseEvent get(OID oids[]) throws IOException, RuntimeException {
 		PDU mibPdu = new PDU();
 		mibPdu.setType(PDU.GET);
 		for (OID oid : oids) {
@@ -95,26 +95,12 @@ public class ManagerUtil {
 	private Target getCommunityTarget() {
 		Address ipDestino = GenericAddress.parse(manager.getIpAddress());
 		CommunityTarget communityTarget = new CommunityTarget();
-		communityTarget.setCommunity(new OctetString("public"));
+		communityTarget.setCommunity(new OctetString(manager.getCommunity()));
 		communityTarget.setAddress(ipDestino);
 		communityTarget.setRetries(2);
-		communityTarget.setTimeout(1500);
+		communityTarget.setTimeout(2000);
 		communityTarget.setVersion(SnmpConstants.version2c);
 		return communityTarget;
-	}
-
-	public String getInformation(OID[] oids) {
-		try {
-			ResponseEvent event = get(oids);
-			String retorno = "";
-			for (int i = 0; i < oids.length; i++) {
-				retorno = retorno.concat(oids[i]+" -> "+event.getResponse().get(i).getVariable().toString()+"\n");
-			}
-			return retorno;
-		} catch (Exception e) {
-			e.printStackTrace();
-			return "Sem resposta do servidor.";
-		}
 	}
 
 	public List<String> getTableAsStrings2(OID... oids) throws RuntimeException {
@@ -135,21 +121,12 @@ public class ManagerUtil {
 		return list;
 	}
 	
-	public String extractSingleString(ResponseEvent event) {
-		return event.getResponse().get(0).getVariable().toString();
-	}
-	
 	public List<Route> getRotas(){
 		List<Route> listRota = new ArrayList<Route>();
-//			1.3.6.1.2.1.4.21.1.1 - dest
 		List<String> dest = getTableAsStrings2(new OID(MIB.ROTA_DESTINO));
-//			1.3.6.1.2.1.4.21.1.11 - mask
 		List<String> mask = getTableAsStrings2(new OID(MIB.ROTA_MASK));
-//			1.3.6.1.2.1.4.21.1.7 - nexthop
 		List<String> nexthop = getTableAsStrings2(new OID(MIB.ROTA_NEXT_HOP));
-//			1.3.6.1.2.1.4.21.1.8 - type
 		List<String> type = getTableAsStrings2(new OID(MIB.ROTA_TIPO));
-//		1.3.6.1.2.1.4.21.1.8 - proto
 		List<String> proto = getTableAsStrings2(new OID(MIB.ROTA_PROTOCOLO));
 		for (int i = 0; i < dest.size(); i++) {
 			Route rota = new Route();
@@ -162,7 +139,6 @@ public class ManagerUtil {
 				case Route.TYPE_INDIRECT: typeDesc = "INDIRETO";break;
 			}
 			rota.setIpRouteType(typeDesc);
-			
 			String protoDesc = "";
 			switch(Integer.parseInt(proto.get(i))){
 				case Route.protocol_rip:protoDesc = "RIP";break;
@@ -175,16 +151,25 @@ public class ManagerUtil {
 		return listRota;
 	}
 
-	public SNMPModel getSNMPModel() throws IOException {
+	public SNMPModel getSNMPModel() throws IOException, RuntimeException {
 		SNMPModel model = new SNMPModel();
-		try{
-			model.setRotas(getRotas());
-			
-		}catch(RuntimeException e){
-			
-		}
+		model.setRotas(getRotas());
 		model.setSysUpTime(getInformation(new OID(MIB.SYS_UP_TIME)));
 		model.setIpAddress(getInformation(new OID(MIB.IP_DEVICE)));
 		return model;
+	}
+
+	/**
+	 * @return the manager
+	 */
+	public Manager getManager() {
+		return manager;
+	}
+
+	/**
+	 * @param manager the manager to set
+	 */
+	public void setManager(Manager manager) {
+		this.manager = manager;
 	}
 }
