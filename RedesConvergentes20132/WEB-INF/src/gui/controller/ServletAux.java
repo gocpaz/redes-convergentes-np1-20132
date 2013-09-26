@@ -15,21 +15,18 @@ import core.util.ManagerUtil;
 public class ServletAux extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
-	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException, RuntimeException {
 		RequestDispatcher rd = request.getRequestDispatcher("includes/routerTemplate.jsp");
 		String ipAddress = request.getParameter("ipAddress");
-		ManagerUtil manager = new ManagerUtil("udp:"+ipAddress+"/161");
-		try {
-			manager.listenPort();
-			SNMPModel retorno = manager.getSNMPModel();
-			ManagerUtil.manager.getSnmp().close();
-			retorno.setIpAddress(ipAddress);
-			request.setAttribute("retorno", retorno);
-			request.setAttribute("ipId", ipAddress.replaceAll("\\.", ""));
-			rd.forward(request, response);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+		String community = request.getParameter("community");
+		ManagerUtil manager = new ManagerUtil("udp:"+ipAddress+"/161", community);
+		manager.listenPort();
+		SNMPModel retorno = manager.getSNMPModel();
+		manager.getManager().getSnmp().close();
+		retorno.setIpAddress(ipAddress);
+		request.setAttribute("retorno", retorno);
+		request.setAttribute("ipId", ipAddress.replaceAll("\\.", ""));
+		rd.forward(request, response);
 	}
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {

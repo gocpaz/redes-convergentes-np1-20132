@@ -14,7 +14,7 @@
 		height:15px;
 		display:inline-block;
 	}
-	.size{width:650px; height: 400px !important;}
+	.size{width:690px; height: 800px !important;}
 </style>
 <link type="text/css" rel="stylesheet" href="css/ui-darkness/jquery-ui-1.10.3.custom.min.css"/>
 <script type="text/javascript" src="dwr/engine.js"></script>
@@ -25,8 +25,9 @@
 <script type="text/javascript" src="js/index.js"></script>
 </head>
 <body>
-	<input type="text" id="ipAddress"/>
-	<font style="cursor: pointer;" onclick="createNewTab();"><i class="button"></i>Add Ip</font>
+	Community: <input type="text" id="community" value="public"/>
+	Endereço IP<input type="text" id="ipAddress"/>
+	<font style="cursor: pointer;" onclick="createNewTab();"><i class="button"></i>Monitorar</font>
 	<h2>Dispositivos</h2>
 	<div id="tabs" class="size">
 		<ul id="menu">
