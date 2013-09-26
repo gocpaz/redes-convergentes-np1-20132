@@ -15,21 +15,25 @@ import core.util.ManagerUtil;
 public class ServletAux extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
-	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException, RuntimeException {
+	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		RequestDispatcher rd = request.getRequestDispatcher("includes/routerTemplate.jsp");
 		String ipAddress = request.getParameter("ipAddress");
 		String community = request.getParameter("community");
 		ManagerUtil manager = new ManagerUtil("udp:"+ipAddress+"/161", community);
-		manager.listenPort();
-		SNMPModel retorno = manager.getSNMPModel();
-		manager.getManager().getSnmp().close();
-		retorno.setIpAddress(ipAddress);
-		request.setAttribute("retorno", retorno);
-		request.setAttribute("ipId", ipAddress.replaceAll("\\.", ""));
-		rd.forward(request, response);
+		try{
+			manager.listenPort();
+			SNMPModel retorno = manager.getSNMPModel();
+			manager.getManager().getSnmp().close();
+			request.setAttribute("ipId", ipAddress.replaceAll("\\.", ""));
+			request.setAttribute("retorno", retorno);
+			rd.forward(request, response);
+		} catch(Exception e){
+			request.setAttribute("mensagem", e.getMessage());
+			response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+		}
 	}
 
-	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
 		doGet(request, response);
 	}
 
