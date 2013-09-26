@@ -1,4 +1,6 @@
-package controller;
+package gui.controller;
+
+import gui.model.SNMPModel;
 
 import java.io.IOException;
 
@@ -8,7 +10,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import model.SNMPModel;
 import core.util.ManagerUtil;
 
 public class ServletAux extends HttpServlet {

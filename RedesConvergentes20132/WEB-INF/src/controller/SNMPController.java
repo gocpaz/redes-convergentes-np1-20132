@@ -1,11 +1,12 @@
 package controller;
 
+import gui.model.SNMPModel;
+
 import java.io.IOException;
 import java.util.Date;
 
 import core.util.ManagerUtil;
 
-import model.SNMPModel;
 
 public class SNMPController {
 

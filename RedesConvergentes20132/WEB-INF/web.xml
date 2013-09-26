@@ -30,7 +30,7 @@
   <servlet>
     <display-name>ServletAux</display-name>
     <servlet-name>pageloader</servlet-name>
-    <servlet-class>controller.ServletAux</servlet-class>
+    <servlet-class>gui.controller.ServletAux</servlet-class>
   </servlet>
   <servlet-mapping>
     <servlet-name>pageloader</servlet-name>
