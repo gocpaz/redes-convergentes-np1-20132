@@ -25,7 +25,7 @@
 <script type="text/javascript" src="js/index.js"></script>
 </head>
 <body>
-	<input type="text" id="ipAddress" onblur="createNewTab();"/>
+	<input type="text" id="ipAddress"/>
 	<font style="cursor: pointer;" onclick="createNewTab();"><i class="button"></i>Add Ip</font>
 	<h2>Dispositivos</h2>
 	<div id="tabs" class="size">

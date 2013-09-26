@@ -10,12 +10,13 @@ import model.SNMPModel;
 public class SNMPController {
 
 	public SNMPModel getMessage(String ipAddress) {
-		ManagerUtil manager = new ManagerUtil(ipAddress);
+		ManagerUtil manager = new ManagerUtil("udp:"+ipAddress+"/161");
 		try {
 			manager.listenPort();
-		SNMPModel retorno = manager.getSNMPModel();
-		retorno.setIpAddress(ipAddress);
-		return retorno;
+			SNMPModel retorno = manager.getSNMPModel();
+			ManagerUtil.manager.getSnmp().close();
+			retorno.setIpAddress(ipAddress);
+			return retorno;
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

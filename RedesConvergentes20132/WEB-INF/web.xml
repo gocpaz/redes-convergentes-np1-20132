@@ -34,7 +34,7 @@
   </servlet>
   <servlet-mapping>
     <servlet-name>pageloader</servlet-name>
-    <url-pattern>*pageloader.pl</url-pattern>
+    <url-pattern>*.pl</url-pattern>
   </servlet-mapping>
   
   

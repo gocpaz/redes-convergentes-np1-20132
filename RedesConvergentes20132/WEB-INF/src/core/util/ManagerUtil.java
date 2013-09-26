@@ -27,7 +27,7 @@ import core.pojo.Manager;
 import core.pojo.Route;
 
 public class ManagerUtil {
-	Manager manager;
+	public static Manager manager;
 
 	/**
 	 * Construtor padrão
@@ -115,7 +115,7 @@ public class ManagerUtil {
 		}
 	}
 
-	public List<String> getTableAsStrings2(OID... oids) {
+	public List<String> getTableAsStrings2(OID... oids) throws RuntimeException {
 		TableUtils tUtils = new TableUtils(manager.getSnmp(), new DefaultPDUFactory());
 		List<TableEvent> events = tUtils.getTable(getCommunityTarget(), oids, null, null);
 		List<String> list = new ArrayList<String>();
@@ -176,8 +176,14 @@ public class ManagerUtil {
 
 	public SNMPModel getSNMPModel() throws IOException {
 		SNMPModel model = new SNMPModel();
-		model.setRotas(getRotas());
+		try{
+			model.setRotas(getRotas());
+			
+		}catch(RuntimeException e){
+			
+		}
 		model.setSysUpTime(getInformation(new OID("1.3.6.1.2.1.1.3.0")));
-		return null;
+		System.out.println(model.getSysUpTime());
+		return model;
 	}
 }

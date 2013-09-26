@@ -17,14 +17,15 @@ public class ServletAux extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		RequestDispatcher rd = request.getRequestDispatcher("includes/routerTemplate.jsp");
 		String ipAddress = request.getParameter("ipAddress");
-		ManagerUtil manager = new ManagerUtil(ipAddress);
+		ManagerUtil manager = new ManagerUtil("udp:"+ipAddress+"/161");
 		try {
 			manager.listenPort();
-		SNMPModel retorno = manager.getSNMPModel();
-		retorno.setIpAddress(ipAddress);
-		request.setAttribute("retorno", retorno);
-		request.setAttribute("ipId", ipAddress.replaceAll("\\.", ""));
-		rd.forward(request, response);
+			SNMPModel retorno = manager.getSNMPModel();
+			ManagerUtil.manager.getSnmp().close();
+			retorno.setIpAddress(ipAddress);
+			request.setAttribute("retorno", retorno);
+			request.setAttribute("ipId", ipAddress.replaceAll("\\.", ""));
+			rd.forward(request, response);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
