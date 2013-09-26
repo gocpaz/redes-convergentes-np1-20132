@@ -1,10 +1,11 @@
 package core.util;
 
+import gui.model.SNMPModel;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import model.SNMPModel;
 
 import org.snmp4j.CommunityTarget;
 import org.snmp4j.PDU;
@@ -23,6 +24,7 @@ import org.snmp4j.util.DefaultPDUFactory;
 import org.snmp4j.util.TableEvent;
 import org.snmp4j.util.TableUtils;
 
+import core.pojo.MIB;
 import core.pojo.Manager;
 import core.pojo.Route;
 
@@ -140,15 +142,15 @@ public class ManagerUtil {
 	public List<Route> getRotas(){
 		List<Route> listRota = new ArrayList<Route>();
 //			1.3.6.1.2.1.4.21.1.1 - dest
-		List<String> dest = getTableAsStrings2(new OID("1.3.6.1.2.1.4.21.1.1"));
+		List<String> dest = getTableAsStrings2(new OID(MIB.ROTA_DESTINO));
 //			1.3.6.1.2.1.4.21.1.11 - mask
-		List<String> mask = getTableAsStrings2(new OID("1.3.6.1.2.1.4.21.1.11"));
+		List<String> mask = getTableAsStrings2(new OID(MIB.ROTA_MASK));
 //			1.3.6.1.2.1.4.21.1.7 - nexthop
-		List<String> nexthop = getTableAsStrings2(new OID("1.3.6.1.2.1.4.21.1.7"));
+		List<String> nexthop = getTableAsStrings2(new OID(MIB.ROTA_NEXT_HOP));
 //			1.3.6.1.2.1.4.21.1.8 - type
-		List<String> type = getTableAsStrings2(new OID("1.3.6.1.2.1.4.21.1.8"));
+		List<String> type = getTableAsStrings2(new OID(MIB.ROTA_TIPO));
 //		1.3.6.1.2.1.4.21.1.8 - proto
-		List<String> proto = getTableAsStrings2(new OID("1.3.6.1.2.1.4.21.1.9"));
+		List<String> proto = getTableAsStrings2(new OID(MIB.ROTA_PROTOCOLO));
 		for (int i = 0; i < dest.size(); i++) {
 			Route rota = new Route();
 			rota.setIpRouteEntry(dest.get(i));
@@ -168,7 +170,6 @@ public class ManagerUtil {
 				case Route.protocol_icmp:protoDesc = "ICMP";break;
 			}
 			rota.setIpRouteProtocol(protoDesc);
-			System.out.println(rota.toString());
 			listRota.add(rota);
 		}
 		return listRota;
@@ -182,8 +183,8 @@ public class ManagerUtil {
 		}catch(RuntimeException e){
 			
 		}
-		model.setSysUpTime(getInformation(new OID("1.3.6.1.2.1.1.3.0")));
-		System.out.println(model.getSysUpTime());
+		model.setSysUpTime(getInformation(new OID(MIB.SYS_UP_TIME)));
+		model.setIpAddress(getInformation(new OID(MIB.IP_DEVICE)));
 		return model;
 	}
 }
