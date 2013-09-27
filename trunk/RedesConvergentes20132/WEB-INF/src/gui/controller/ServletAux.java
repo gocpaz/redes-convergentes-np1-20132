@@ -23,6 +23,7 @@ public class ServletAux extends HttpServlet {
 		try{
 			manager.listenPort();
 			SNMPModel retorno = manager.getSNMPModel();
+			retorno.setIpAddress(ipAddress);
 			manager.getManager().getSnmp().close();
 			request.setAttribute("ipId", ipAddress.replaceAll("\\.", ""));
 			request.setAttribute("retorno", retorno);

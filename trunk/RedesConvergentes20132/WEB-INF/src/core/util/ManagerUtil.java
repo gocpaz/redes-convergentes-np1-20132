@@ -156,7 +156,10 @@ public class ManagerUtil {
 		SNMPModel model = new SNMPModel();
 		model.setRotas(getRotas());
 		model.setSysUpTime(getInformation(new OID(MIB.SYS_UP_TIME)));
-		model.setIpAddress(getInformation(new OID(MIB.IP_DEVICE)));
+		String retorno = getInformation(new OID(MIB.DEVICE_MODEL));
+		if(retorno.contains("noSuch")){
+			model.setDeviceModel(getInformation(new OID(MIB.SYS_INFO)));
+		}
 		return model;
 	}
 
