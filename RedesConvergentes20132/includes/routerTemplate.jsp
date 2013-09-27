@@ -4,6 +4,10 @@
 <div id="router" style="display: none;">
 	<table>
 		<tr>
+			<td>Device model</td>
+			<td style="word-wrap: break-word; width: 300px;">${retorno.deviceModel}</td>
+		</tr>
+		<tr>
 			<td>Endereco IP</td>
 			<td>${retorno.ipAddress}</td>
 		</tr>

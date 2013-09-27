@@ -11,6 +11,7 @@ public class SNMPModel {
 	private String ipAddress;
 	private String sysUpTime;
 	private List<Route> rotas;
+	private String deviceModel;
 	/**
 	 * @return the ipAddress
 	 */
@@ -46,5 +47,17 @@ public class SNMPModel {
 	 */
 	public void setRotas(List<Route> rotas) {
 		this.rotas = rotas;
+	}
+	/**
+	 * @return the deviceModel
+	 */
+	public String getDeviceModel() {
+		return deviceModel;
+	}
+	/**
+	 * @param deviceModel the deviceModel to set
+	 */
+	public void setDeviceModel(String deviceModel) {
+		this.deviceModel = deviceModel;
 	}
 }
