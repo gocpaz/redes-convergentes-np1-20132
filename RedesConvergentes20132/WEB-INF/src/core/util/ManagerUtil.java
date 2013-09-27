@@ -104,7 +104,7 @@ public class ManagerUtil {
 		return communityTarget;
 	}
 
-	public List<String> getTableAsStrings2(OID... oids) throws RuntimeException {
+	public List<String> getChildrenNodes(OID... oids) throws RuntimeException {
 		TableUtils tUtils = new TableUtils(manager.getSnmp(), new DefaultPDUFactory());
 		List<TableEvent> events = tUtils.getTable(getCommunityTarget(), oids, null, null);
 		List<String> list = new ArrayList<String>();
@@ -124,11 +124,11 @@ public class ManagerUtil {
 	
 	public List<Route> getRotas(){
 		List<Route> listRota = new ArrayList<Route>();
-		List<String> dest = getTableAsStrings2(new OID(MIB.ROTA_DESTINO));
-		List<String> mask = getTableAsStrings2(new OID(MIB.ROTA_MASK));
-		List<String> nexthop = getTableAsStrings2(new OID(MIB.ROTA_NEXT_HOP));
-		List<String> type = getTableAsStrings2(new OID(MIB.ROTA_TIPO));
-		List<String> proto = getTableAsStrings2(new OID(MIB.ROTA_PROTOCOLO));
+		List<String> dest = getChildrenNodes(new OID(MIB.ROTA_DESTINO));
+		List<String> mask = getChildrenNodes(new OID(MIB.ROTA_MASK));
+		List<String> nexthop = getChildrenNodes(new OID(MIB.ROTA_NEXT_HOP));
+		List<String> type = getChildrenNodes(new OID(MIB.ROTA_TIPO));
+		List<String> proto = getChildrenNodes(new OID(MIB.ROTA_PROTOCOLO));
 		for (int i = 0; i < dest.size(); i++) {
 			Route rota = new Route();
 			rota.setIpRouteEntry(dest.get(i));
@@ -157,9 +157,32 @@ public class ManagerUtil {
 		model.setRotas(getRotas());
 		model.setSysUpTime(getInformation(new OID(MIB.SYS_UP_TIME)));
 		String retorno = getInformation(new OID(MIB.DEVICE_MODEL));
-		if(retorno.contains("noSuch")){
-			model.setDeviceModel(getInformation(new OID(MIB.SYS_INFO)));
+		if(retorno.toLowerCase().contains("switch")){
+			retorno = "Switch";
+		}else if(retorno.toLowerCase().contains("ap")){
+			retorno = "Access Point";
+		}else if(retorno.toLowerCase().contains("nosuch")){
+			retorno = getInformation(new OID(MIB.SYS_INFO));
+			String aux[] = retorno.split(" ");
+			retorno = aux[0]+" "+aux[1]+" "+aux[2];
+		}else{
+			retorno = "Roteador";
 		}
+		model.setDeviceModel(retorno);
+		
+		List<String> listaNome = getChildrenNodes(new OID(MIB.INTERFACE_NAME));
+		List<String> listaStatus = getChildrenNodes(new OID(MIB.INTERFACE_STATUS));
+		List<String> listaIndex = getChildrenNodes(new OID(MIB.INTERFACE_INDEX));
+//		for (String string : listaIndex) {
+//			System.out.println(string);
+//		}
+	for (int i = 0; i< listaIndex.size(); i++) {
+		System.out.println(getInformation(new OID(MIB.INTERFACE_NAME_INDEX+"."+listaIndex.get(i))));
+		System.out.println(getInformation(new OID(MIB.INTERFACE_STATUS+"."+listaIndex.get(i))));
+	}
+//		for (int i = 0; i< listaNome.size(); i++) {
+//			System.out.println(listaNome.get(i)+" ; "+listaIP.get(i)+" ; "+listaStatus.get(i));
+//		}
 		return model;
 	}
 
