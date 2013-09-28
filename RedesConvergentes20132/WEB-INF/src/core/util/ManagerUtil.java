@@ -187,7 +187,8 @@ public class ManagerUtil {
 		List<String> ip = getChildrenNodes(new OID(MIB.IP_TABLE));
 		List<Interface> listaInterface = new ArrayList<Interface>();
 		
-		int countIp = 0;
+		List<String> l1 = getChildrenNodes(new OID(MIB.INTERFACE_INDEX_IP));
+		
 		for (int i = 0; i< listaIndex.size(); i++) {
 			Interface in = new Interface();
 			in.setName(getInformation(new OID(MIB.INTERFACE_NAME_INDEX+"."+listaIndex.get(i))));
@@ -197,15 +198,14 @@ public class ManagerUtil {
 			in.setPkDescartadosOut(getInformation(new OID(MIB.DISCARDED_PACKETS_OUT+"."+listaIndex.get(i))));
 			in.setPkTrafegadosIn(getInformation(new OID(MIB.NUMBER_OF_PACKETS_IN+"."+listaIndex.get(i))));
 			in.setPkTrafegadosIn(getInformation(new OID(MIB.NUMBER_OF_PACKETS_OUT+"."+listaIndex.get(i))));
-			if(Integer.parseInt(getInformation(new OID(MIB.INTERFACE_STATUS+"."+listaIndex.get(i)))) == Interface.UP){
-				in.setIp(ip.get(countIp));
-				countIp++;
+			for (int j = 0; j < l1.size(); j++) {
+				if(l1.get(j).equals(listaIndex.get(i))){
+					in.setIp(ip.get(j));
+				}
 			}
 			listaInterface.add(in);
 		}
-		
 		model.setInterfaces(listaInterface);
-		
 		return model;
 	}
 	private String getLastReset(String sysUpTime) {

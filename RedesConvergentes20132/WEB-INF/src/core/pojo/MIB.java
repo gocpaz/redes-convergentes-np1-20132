@@ -12,8 +12,6 @@ public class MIB {
 	public static final String ROTA_TIPO = "1.3.6.1.2.1.4.21.1.8";
 	public static final String ROTA_PROTOCOLO = "1.3.6.1.2.1.4.21.1.9";
 	
-	public static final String IP = "1.3.6.1.2.1.14";
-	
 	//MIBS DO TRABALHO
 	//1
 	public static final String DEVICE_MODEL = "1.3.6.1.2.1.47.1.1.1.1.2.1";
@@ -35,5 +33,6 @@ public class MIB {
     public static final String MIB_IP_ROUTE = "1.3.6.1.2.1.4.21";
 	//5
     public static final String MIB_SYS_UP_TIME = "1.3.6.1.2.1.1.3.0";
+	public static final String INTERFACE_INDEX_IP = "1.3.6.1.2.1.4.20.1.2";
 	
 }
