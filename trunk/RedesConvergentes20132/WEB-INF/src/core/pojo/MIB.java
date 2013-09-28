@@ -12,7 +12,7 @@ public class MIB {
 	public static final String ROTA_TIPO = "1.3.6.1.2.1.4.21.1.8";
 	public static final String ROTA_PROTOCOLO = "1.3.6.1.2.1.4.21.1.9";
 	
-	public static final String IP_TEST = " 1.3.6.1.2.1.4.21.1";
+	public static final String IP = "1.3.6.1.2.1.14";
 	
 	//MIBS DO TRABALHO
 	//1

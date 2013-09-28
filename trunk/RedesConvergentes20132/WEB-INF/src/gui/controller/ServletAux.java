@@ -30,6 +30,7 @@ public class ServletAux extends HttpServlet {
 			rd.forward(request, response);
 		} catch(Exception e){
 			request.setAttribute("mensagem", e.getMessage());
+			e.printStackTrace();
 			response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
 		}
 	}
