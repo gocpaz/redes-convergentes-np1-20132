@@ -3,31 +3,31 @@
 <%@ page isELIgnored="false"%>
 
 <div id="router" style="display: none;">
-	<table>
-		<tr>
+	<table cellpadding="2" style="background-color: #5E5D5A;">
+		<tr bgcolor="#000000">
 			<td>Device model</td>
 			<td style="word-wrap: break-word; width: 300px;">${retorno.deviceModel}</td>
 		</tr>
 		<c:if test="${retorno.iosVersion != null}">
-			<tr>
+			<tr bgcolor="#000000">
 				<td>IOS Version</td>
 				<td>${retorno.iosVersion}</td>
 			</tr>
 		</c:if>
-		<tr>
+		<tr bgcolor="#000000">
 			<td>Endereco IP</td>
 			<td>${retorno.ipAddress}</td>
 		</tr>
-		<tr>
+		<tr bgcolor="#000000">
 			<td>UP Time</td>
 			<td>${retorno.sysUpTime}</td>
 		</tr>
-		<tr>
+		<tr bgcolor="#000000">
 			<td>Last Reset</td>
 			<td>${retorno.lastReset}</td>
 		</tr>
 		<c:if test="${fn:length(retorno.interfaces) > 0}">
-			<tr>
+			<tr bgcolor="#000000">
 				<td colspan="2">Interfaces</td>
 			</tr>
 			<tr>
@@ -68,7 +68,7 @@
 			</tr>
 		</c:if>
 		<c:if test="${fn:length(retorno.rotas) > 0}">
-			<tr>
+			<tr bgcolor="#000000">
 				<td colspan="2">Rotas</td>
 			</tr>
 			<tr>

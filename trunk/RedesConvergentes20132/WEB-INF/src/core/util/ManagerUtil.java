@@ -3,9 +3,12 @@ package core.util;
 import gui.model.SNMPModel;
 
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 import org.snmp4j.CommunityTarget;
 import org.snmp4j.PDU;
@@ -146,6 +149,7 @@ public class ManagerUtil {
 			switch(Integer.parseInt(proto.get(i))){
 				case Route.protocol_rip:protoDesc = "RIP";break;
 				case Route.protocol_local:protoDesc = "LOCAL";break;
+				case Route.protocol_netmgmt:protoDesc = "NETMGMT";break;
 				case Route.protocol_icmp:protoDesc = "ICMP";break;
 			}
 			rota.setIpRouteProtocol(protoDesc);
@@ -173,8 +177,15 @@ public class ManagerUtil {
 			IOSVersion = getInformation(new OID(MIB.SYS_INFO)).toLowerCase().split("version")[1].split(",")[0].trim().toUpperCase();
 		}else if(retorno.toLowerCase().contains("nosuch")){
 			retorno = getInformation(new OID(MIB.SYS_INFO));
-			String aux[] = retorno.split(" ");
-			retorno = aux[0]+" "+aux[1]+" "+aux[2];
+			if(retorno.toLowerCase().contains("windows")){
+				String aux[] = retorno.split("-");
+				String hard[] = aux[0].split(" ");
+				String soft[] = aux[1].split(" ");
+				retorno = hard[0]+" "+hard[1]+"<br/>"+soft[0]+" "+soft[1]+" "+soft[2]+" "+soft[4];
+			}else{
+				String aux[] = retorno.split(" ");
+				retorno = aux[0]+" "+aux[1]+" "+aux[2];
+			}
 			IOSVersion = null;
 		}else{
 			retorno = "Roteador";
@@ -191,7 +202,11 @@ public class ManagerUtil {
 		
 		for (int i = 0; i< listaIndex.size(); i++) {
 			Interface in = new Interface();
-			in.setName(getInformation(new OID(MIB.INTERFACE_NAME_INDEX+"."+listaIndex.get(i))));
+			String name = getInformation(new OID(MIB.INTERFACE_NAME_INDEX+"."+listaIndex.get(i)));
+			if(name.length() > 100){
+				name = name.substring(0, 100);
+			}
+			in.setName(name);
 			in.setStatus(getInformation(new OID(MIB.INTERFACE_STATUS+"."+listaIndex.get(i))));
 			in.setMac(getInformation(new OID(MIB.INTERFACE_MAC+"."+listaIndex.get(i))));
 			in.setPkDescartadosIn(getInformation(new OID(MIB.DISCARDED_PACKETS_IN+"."+listaIndex.get(i))));
@@ -216,16 +231,19 @@ public class ManagerUtil {
 		}
 		String horas = sysUpTime.split(",")[sysUpTime.split(",").length-1].split("\\.")[0].split(":")[0].trim();
 		long qtHoras = Long.parseLong(horas) * 3600000;
-		String minutos = sysUpTime.split(",")[sysUpTime.split(",").length-1].split("\\.")[0].split(":")[0].trim();
+		String minutos = sysUpTime.split(",")[sysUpTime.split(",").length-1].split("\\.")[0].split(":")[1].trim();
 		long qtMinutos = Long.parseLong(minutos) * 60000;
-		String segundos = sysUpTime.split(",")[sysUpTime.split(",").length-1].split("\\.")[0].split(":")[0].trim();
+		String segundos = sysUpTime.split(",")[sysUpTime.split(",").length-1].split("\\.")[0].split(":")[2].trim();
 		long qtSegundos = Long.parseLong(segundos) * 1000;
 		
-		long tempo = Calendar.getInstance().getTimeInMillis() - (qtDias+qtHoras+qtMinutos+qtSegundos);
-		Calendar calendarioNovo = Calendar.getInstance();
+		Locale brasil = new Locale("pt","br");
+		Calendar calendarioNovo = Calendar.getInstance(brasil);
+		long tempo = calendarioNovo.getTimeInMillis() - (qtDias+qtHoras+qtMinutos+qtSegundos);
 		calendarioNovo.setTimeInMillis(tempo);
-		
-		return calendarioNovo.getTime().toString();
+		Date data = new Date();
+		data.setTime(tempo);
+		SimpleDateFormat df = new SimpleDateFormat("EEE dd MMM yyyy HH:mm:ss", brasil);
+		return df.format(data);
 	}
 
 	/**
