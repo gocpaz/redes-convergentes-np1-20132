@@ -4,6 +4,7 @@ import gui.model.SNMPModel;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 import org.snmp4j.CommunityTarget;
@@ -23,6 +24,7 @@ import org.snmp4j.util.DefaultPDUFactory;
 import org.snmp4j.util.TableEvent;
 import org.snmp4j.util.TableUtils;
 
+import core.pojo.Interface;
 import core.pojo.MIB;
 import core.pojo.Manager;
 import core.pojo.Route;
@@ -154,36 +156,76 @@ public class ManagerUtil {
 
 	public SNMPModel getSNMPModel() throws IOException, RuntimeException {
 		SNMPModel model = new SNMPModel();
+		
 		model.setRotas(getRotas());
+		
 		model.setSysUpTime(getInformation(new OID(MIB.SYS_UP_TIME)));
+		
+		model.setLastReset(getLastReset(model.getSysUpTime()));
+		
 		String retorno = getInformation(new OID(MIB.DEVICE_MODEL));
+		String IOSVersion = "";
 		if(retorno.toLowerCase().contains("switch")){
 			retorno = "Switch";
+			IOSVersion = getInformation(new OID(MIB.SYS_INFO)).toLowerCase().split("version")[1].split(",")[0].trim().toUpperCase();
 		}else if(retorno.toLowerCase().contains("ap")){
 			retorno = "Access Point";
+			IOSVersion = getInformation(new OID(MIB.SYS_INFO)).toLowerCase().split("version")[1].split(",")[0].trim().toUpperCase();
 		}else if(retorno.toLowerCase().contains("nosuch")){
 			retorno = getInformation(new OID(MIB.SYS_INFO));
 			String aux[] = retorno.split(" ");
 			retorno = aux[0]+" "+aux[1]+" "+aux[2];
+			IOSVersion = null;
 		}else{
 			retorno = "Roteador";
+			IOSVersion = getInformation(new OID(MIB.SYS_INFO)).toLowerCase().split("version")[1].split(",")[0].trim().toUpperCase();
 		}
 		model.setDeviceModel(retorno);
+		model.setIosVersion(IOSVersion);
 		
-		List<String> listaNome = getChildrenNodes(new OID(MIB.INTERFACE_NAME));
-		List<String> listaStatus = getChildrenNodes(new OID(MIB.INTERFACE_STATUS));
 		List<String> listaIndex = getChildrenNodes(new OID(MIB.INTERFACE_INDEX));
-//		for (String string : listaIndex) {
-//			System.out.println(string);
-//		}
-	for (int i = 0; i< listaIndex.size(); i++) {
-		System.out.println(getInformation(new OID(MIB.INTERFACE_NAME_INDEX+"."+listaIndex.get(i))));
-		System.out.println(getInformation(new OID(MIB.INTERFACE_STATUS+"."+listaIndex.get(i))));
-	}
-//		for (int i = 0; i< listaNome.size(); i++) {
-//			System.out.println(listaNome.get(i)+" ; "+listaIP.get(i)+" ; "+listaStatus.get(i));
-//		}
+		List<String> ip = getChildrenNodes(new OID(MIB.IP_TABLE));
+		List<Interface> listaInterface = new ArrayList<Interface>();
+		
+		int countIp = 0;
+		for (int i = 0; i< listaIndex.size(); i++) {
+			Interface in = new Interface();
+			in.setName(getInformation(new OID(MIB.INTERFACE_NAME_INDEX+"."+listaIndex.get(i))));
+			in.setStatus(getInformation(new OID(MIB.INTERFACE_STATUS+"."+listaIndex.get(i))));
+			in.setMac(getInformation(new OID(MIB.INTERFACE_MAC+"."+listaIndex.get(i))));
+			in.setPkDescartadosIn(getInformation(new OID(MIB.DISCARDED_PACKETS_IN+"."+listaIndex.get(i))));
+			in.setPkDescartadosOut(getInformation(new OID(MIB.DISCARDED_PACKETS_OUT+"."+listaIndex.get(i))));
+			in.setPkTrafegadosIn(getInformation(new OID(MIB.NUMBER_OF_PACKETS_IN+"."+listaIndex.get(i))));
+			in.setPkTrafegadosIn(getInformation(new OID(MIB.NUMBER_OF_PACKETS_OUT+"."+listaIndex.get(i))));
+			if(Integer.parseInt(getInformation(new OID(MIB.INTERFACE_STATUS+"."+listaIndex.get(i)))) == Interface.UP){
+				in.setIp(ip.get(countIp));
+				countIp++;
+			}
+			listaInterface.add(in);
+		}
+		
+		model.setInterfaces(listaInterface);
+		
 		return model;
+	}
+	private String getLastReset(String sysUpTime) {
+		long qtDias = 0;
+		if(sysUpTime.toLowerCase().contains("day")){
+			String dias = sysUpTime.split(",")[0].split("\\)")[1].split("day?")[0].trim();
+			qtDias = Long.parseLong(dias) * 86400000;
+		}
+		String horas = sysUpTime.split(",")[sysUpTime.split(",").length-1].split("\\.")[0].split(":")[0].trim();
+		long qtHoras = Long.parseLong(horas) * 3600000;
+		String minutos = sysUpTime.split(",")[sysUpTime.split(",").length-1].split("\\.")[0].split(":")[0].trim();
+		long qtMinutos = Long.parseLong(minutos) * 60000;
+		String segundos = sysUpTime.split(",")[sysUpTime.split(",").length-1].split("\\.")[0].split(":")[0].trim();
+		long qtSegundos = Long.parseLong(segundos) * 1000;
+		
+		long tempo = Calendar.getInstance().getTimeInMillis() - (qtDias+qtHoras+qtMinutos+qtSegundos);
+		Calendar calendarioNovo = Calendar.getInstance();
+		calendarioNovo.setTimeInMillis(tempo);
+		
+		return calendarioNovo.getTime().toString();
 	}
 
 	/**

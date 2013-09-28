@@ -2,6 +2,7 @@ package gui.model;
 
 import java.util.List;
 
+import core.pojo.Interface;
 import core.pojo.Route;
 
 /**
@@ -12,6 +13,10 @@ public class SNMPModel {
 	private String sysUpTime;
 	private List<Route> rotas;
 	private String deviceModel;
+	private List<Interface> interfaces;
+	private String iosVersion;
+	private String lastReset;
+	
 	/**
 	 * @return the ipAddress
 	 */
@@ -59,5 +64,41 @@ public class SNMPModel {
 	 */
 	public void setDeviceModel(String deviceModel) {
 		this.deviceModel = deviceModel;
+	}
+	/**
+	 * @return the interfaces
+	 */
+	public List<Interface> getInterfaces() {
+		return interfaces;
+	}
+	/**
+	 * @param interfaces the interfaces to set
+	 */
+	public void setInterfaces(List<Interface> interfaces) {
+		this.interfaces = interfaces;
+	}
+	/**
+	 * @return the iosVersion
+	 */
+	public String getIosVersion() {
+		return iosVersion;
+	}
+	/**
+	 * @param iosVersion the iosVersion to set
+	 */
+	public void setIosVersion(String iosVersion) {
+		this.iosVersion = iosVersion;
+	}
+	/**
+	 * @return the lastReset
+	 */
+	public String getLastReset() {
+		return lastReset;
+	}
+	/**
+	 * @param lastReset the lastReset to set
+	 */
+	public void setLastReset(String lastReset) {
+		this.lastReset = lastReset;
 	}
 }
