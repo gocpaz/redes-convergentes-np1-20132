@@ -14,7 +14,7 @@
 		height:15px;
 		display:inline-block;
 	}
-	.size{width:690px; height: 800px !important;}
+	.size{width:auto; height: auto !important;}
 </style>
 <link type="text/css" rel="stylesheet" href="css/ui-darkness/jquery-ui-1.10.3.custom.min.css"/>
 <script type="text/javascript" src="dwr/engine.js"></script>
