@@ -48,6 +48,7 @@ function createNewTab() {
 	var ip = $.trim($("#ipAddress").val());
 	community = $.trim($("#community").val());
 	$("#community").attr("readonly","readonly");
+	$("#community").css("background-color","#f0f0f0");
 	if(isIpValid(ip)){
 		if($("#tabs:hidden").length > 0){
 			$("#tabs").show();
@@ -74,5 +75,9 @@ $(function() {
 		var panelId = $(this).closest("li").remove().attr("aria-controls");
 		$("#" + panelId).remove();
 		$("#tabs").tabs("refresh");
+		if($("span.ui-icon-close").length == 0){
+			$("#community").removeAttr("readonly");
+			$("#community").css("background-color","");
+		}
 	});
 });
