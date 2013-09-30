@@ -144,7 +144,7 @@ public class ManagerUtil {
 		List<String> nexthop = getChildrenNodes(new OID(MIB.ROTA_NEXT_HOP));
 		List<String> type = getChildrenNodes(new OID(MIB.ROTA_TIPO));
 		List<String> proto = getChildrenNodes(new OID(MIB.ROTA_PROTOCOLO));
-		for (int i = 0; i < dest.size(); i++) {
+		for (int i = 0; i < mask.size(); i++) {
 			Route rota = new Route();
 			rota.setIpRouteEntry(dest.get(i));
 			rota.setIpRouteMask(mask.get(i));
