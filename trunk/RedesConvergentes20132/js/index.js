@@ -19,7 +19,7 @@ function updateCurrentInterval(ip){
 				alert(msg);
 			}
 		});
-	}, 2000);
+	}, 5000);
 }
 
 function erroServer(){
