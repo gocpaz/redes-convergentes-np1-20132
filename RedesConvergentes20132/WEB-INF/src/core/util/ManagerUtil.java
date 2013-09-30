@@ -226,10 +226,31 @@ public class ManagerUtil {
 			in.setName(name);
 			in.setStatus(getInformation(new OID(MIB.INTERFACE_STATUS+"."+listaIndex.get(i))));
 			in.setMac(getInformation(new OID(MIB.INTERFACE_MAC+"."+listaIndex.get(i))));
-			in.setPkDescartadosIn(getInformation(new OID(MIB.DISCARDED_PACKETS_IN+"."+listaIndex.get(i))));
-			in.setPkDescartadosOut(getInformation(new OID(MIB.DISCARDED_PACKETS_OUT+"."+listaIndex.get(i))));
-			in.setPkTrafegadosIn(getInformation(new OID(MIB.NUMBER_OF_PACKETS_IN+"."+listaIndex.get(i))));
-			in.setPkTrafegadosOut(getInformation(new OID(MIB.NUMBER_OF_PACKETS_OUT+"."+listaIndex.get(i))));
+			
+			String descartadosIn = getInformation(new OID(MIB.DISCARDED_PACKETS_IN+"."+listaIndex.get(i)));
+			if(descartadosIn.toLowerCase().contains("nosuch")){
+				in.setPkDescartadosIn("");
+			}else{
+				in.setPkDescartadosIn(descartadosIn);
+			}
+			String descartadosOut = getInformation(new OID(MIB.DISCARDED_PACKETS_OUT+"."+listaIndex.get(i)));
+			if(descartadosOut.toLowerCase().contains("nosuch")){
+				in.setPkDescartadosOut("");
+			}else{
+				in.setPkDescartadosOut(descartadosOut);
+			}
+			String trafegadosIn = getInformation(new OID(MIB.NUMBER_OF_PACKETS_IN+"."+listaIndex.get(i)));
+			if(trafegadosIn.toLowerCase().contains("nosuch")){
+				in.setPkTrafegadosIn("");
+			}else{
+				in.setPkTrafegadosIn(trafegadosIn);
+			}
+			String trafegadosOut = getInformation(new OID(MIB.NUMBER_OF_PACKETS_OUT+"."+listaIndex.get(i)));
+			if(trafegadosOut.toLowerCase().contains("nosuch")){
+				in.setPkTrafegadosOut("");
+			}else{
+				in.setPkTrafegadosOut(trafegadosOut);
+			}
 			for (int j = 0; j < l1.size(); j++) {
 				if(l1.get(j).equals(listaIndex.get(i))){
 					in.setIp(ip.get(j));
