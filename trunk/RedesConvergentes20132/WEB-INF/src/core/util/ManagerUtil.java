@@ -109,6 +109,12 @@ public class ManagerUtil {
 		return communityTarget;
 	}
 
+	/**
+	 * Metodo que retorna um conjunto de dados a partir de um ou mais OIDs.
+	 * @param oids
+	 * @return
+	 * @throws RuntimeException
+	 */
 	public List<String> getChildrenNodes(OID... oids) throws RuntimeException {
 		TableUtils tUtils = new TableUtils(manager.getSnmp(), new DefaultPDUFactory());
 		List<TableEvent> events = tUtils.getTable(getCommunityTarget(), oids, null, null);
@@ -127,6 +133,10 @@ public class ManagerUtil {
 		return list;
 	}
 	
+	/**
+	 * Metodo que retorna a tabela de rotas.
+	 * @return
+	 */
 	public List<Route> getRotas(){
 		List<Route> listRota = new ArrayList<Route>();
 		List<String> dest = getChildrenNodes(new OID(MIB.ROTA_DESTINO));
@@ -158,6 +168,13 @@ public class ManagerUtil {
 		return listRota;
 	}
 
+	
+	/**
+	 * Retorna o objeto populado com as informações do equipamento a serem exibinas na tela.
+	 * @return
+	 * @throws IOException
+	 * @throws RuntimeException
+	 */
 	public SNMPModel getSNMPModel() throws IOException, RuntimeException {
 		SNMPModel model = new SNMPModel();
 		
@@ -212,7 +229,7 @@ public class ManagerUtil {
 			in.setPkDescartadosIn(getInformation(new OID(MIB.DISCARDED_PACKETS_IN+"."+listaIndex.get(i))));
 			in.setPkDescartadosOut(getInformation(new OID(MIB.DISCARDED_PACKETS_OUT+"."+listaIndex.get(i))));
 			in.setPkTrafegadosIn(getInformation(new OID(MIB.NUMBER_OF_PACKETS_IN+"."+listaIndex.get(i))));
-			in.setPkTrafegadosIn(getInformation(new OID(MIB.NUMBER_OF_PACKETS_OUT+"."+listaIndex.get(i))));
+			in.setPkTrafegadosOut(getInformation(new OID(MIB.NUMBER_OF_PACKETS_OUT+"."+listaIndex.get(i))));
 			for (int j = 0; j < l1.size(); j++) {
 				if(l1.get(j).equals(listaIndex.get(i))){
 					in.setIp(ip.get(j));
@@ -223,6 +240,12 @@ public class ManagerUtil {
 		model.setInterfaces(listaInterface);
 		return model;
 	}
+	
+	/**
+	 * Método que calcula o ultimo reset do equipamento
+	 * @param sysUpTime
+	 * @return
+	 */
 	private String getLastReset(String sysUpTime) {
 		long qtDias = 0;
 		if(sysUpTime.toLowerCase().contains("day")){
