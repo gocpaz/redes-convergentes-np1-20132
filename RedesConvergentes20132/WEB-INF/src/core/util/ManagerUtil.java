@@ -249,7 +249,12 @@ public class ManagerUtil {
 	private String getLastReset(String sysUpTime) {
 		long qtDias = 0;
 		if(sysUpTime.toLowerCase().contains("day")){
-			String dias = sysUpTime.split(",")[0].split("\\)")[1].split("day?")[0].trim();
+			String dias = "";
+			if(sysUpTime.contains("\\([0-9]*\\")){
+				dias = sysUpTime.split(",")[0].split("\\)")[1].split("day?")[0].trim();
+			}else{
+				dias = sysUpTime.split(",")[0].split("day?")[0].trim();
+			}
 			qtDias = Long.parseLong(dias) * 86400000;
 		}
 		String horas = sysUpTime.split(",")[sysUpTime.split(",").length-1].split("\\.")[0].split(":")[0].trim();
